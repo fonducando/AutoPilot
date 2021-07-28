@@ -24,7 +24,7 @@
 /*-------------------------------------------------------------*/
 #include <stdbool.h>
 #include <stdint.h>
-
+#include "stm32h7xx_hal.h"
 /*-------------------------------------------------------------*/
 /*		Macros and definitions				*/
 /*-------------------------------------------------------------*/
@@ -128,6 +128,15 @@ extern "C" {
 	 */
 	void pid_tune(pid_t pid, float kp, float ki, float kd);
 
+	/**
+	 * @brief Sets the pid algorithm period
+	 *
+	 * Changes the between PID control loop computations.
+	 *
+	 * @param pid The PID controller instance to modify
+	 * @param time The time in milliseconds between computations
+	 */
+	void pid_sample(pid_t pid, uint32_t time);
 
 	/**
 	 * @brief Sets the limits for the PID controller output

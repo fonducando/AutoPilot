@@ -1,8 +1,8 @@
-PID.c:22:7:pid_create	40	static
-PID.c:41:6:pid_need_compute	16	static
-PID.c:46:6:pid_compute	32	static
-PID.c:73:6:pid_tune	24	static
-PID.c:91:6:pid_limits	24	static
-PID.c:110:6:pid_auto	16	static
-PID.c:124:6:pid_manual	16	static
-PID.c:129:6:pid_direction	16	static
+PID.c:42:6:pid_need_compute	16	static
+PID.c:48:6:pid_compute	32	static
+PID.c:79:6:pid_tune	40	static
+PID.c:99:6:pid_sample	24	static
+PID.c:109:6:pid_limits	24	static
+PID.c:128:6:pid_auto	16	static
+PID.c:142:6:pid_manual	16	static
+PID.c:147:6:pid_direction	16	static

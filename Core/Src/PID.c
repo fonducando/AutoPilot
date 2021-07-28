@@ -29,23 +29,28 @@ pid_t pid_create(pid_t pid, float* in, float* out, float* set, float kp, float k
 	pid_limits(pid, 0, 255);
 
 	// Set default sample time to 100 ms
-
+	pid->sampletime = 100 * (HAL_GetTick() / 1000);
 
 	pid_direction(pid, E_PID_DIRECT);
 	pid_tune(pid, kp, ki, kd);
 
+	pid->lasttime = HAL_GetTick() - pid->sampletime;
 
 	return pid;
 }
 
 bool pid_need_compute(pid_t pid)
 {
-     return true;
+	// Check if the PID period has elapsed
+	return(HAL_GetTick() - pid->lasttime >= pid->sampletime) ? true : false;
 }
 
 void pid_compute(pid_t pid)
 {
-
+	// Check if control is enabled
+	if (!pid->automode)
+		return; //false;
+	
 	float in = *(pid->input);
 	// Compute error
 	float error = (*(pid->setpoint)) - in;
@@ -68,6 +73,7 @@ void pid_compute(pid_t pid)
 	(*pid->output) = out;
 	// Keep track of some variables for next execution
 	pid->lastin = in;
+	pid->lasttime = HAL_GetTick();;
 }
 
 void pid_tune(pid_t pid, float kp, float ki, float kd)
@@ -77,8 +83,11 @@ void pid_tune(pid_t pid, float kp, float ki, float kd)
 		return;
 	
 	//Compute sample time in seconds
+	float ssec = ((float) pid->sampletime) / ((float) (HAL_GetTick() *1000));
 
 	pid->Kp = kp;
+	pid->Ki = ki * ssec;
+	pid->Kd = kd / ssec;
 
 	if (pid->direction == E_PID_REVERSE) {
 		pid->Kp = 0 - pid->Kp;
@@ -87,6 +96,15 @@ void pid_tune(pid_t pid, float kp, float ki, float kd)
 	}
 }
 
+void pid_sample(pid_t pid, uint32_t time)
+{
+	if (time > 0) {
+		float ratio = (float) (time * ((HAL_GetTick() *1000) / 1000)) / (float) pid->sampletime;
+		pid->Ki *= ratio;
+		pid->Kd /= ratio;
+		pid->sampletime = time * ((HAL_GetTick() *1000) / 1000);
+	}
+}
 
 void pid_limits(pid_t pid, float min, float max)
 {
