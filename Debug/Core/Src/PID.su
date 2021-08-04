@@ -1,3 +1,4 @@
+PID.c:22:7:pid_create	40	static
 PID.c:42:6:pid_need_compute	16	static
 PID.c:48:6:pid_compute	32	static
 PID.c:79:6:pid_tune	40	static
